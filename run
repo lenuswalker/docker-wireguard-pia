@@ -232,6 +232,11 @@ if [ -n "$FWD_IFACE" ]; then
   echo "$(date): Forwarding traffic from $FWD_IFACE to VPN"
 fi
 
+# iptables routing
+iptables -F
+iptables -t nat -A POSTROUTING -o tap+ -j MASQUERADE
+iptables -t nat -A POSTROUTING -o tun+ -j MASQUERADE
+
 # Setup port forwarding if requested and available
 pf_api_ip=$(grep '#pf api' "$wg_conf"| sed 's/#pf api ip: \(.*\)/\1/')
 pf_cn=$(grep '#cn: ' "$wg_conf"| sed 's/#cn: \(.*\)/\1/')
