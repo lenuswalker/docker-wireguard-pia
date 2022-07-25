@@ -234,6 +234,7 @@ fi
 
 # iptables routing
 iptables -t nat -A POSTROUTING -o wg0 -j MASQUERADE
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 
 # Setup port forwarding if requested and available
 pf_api_ip=$(grep '#pf api' "$wg_conf"| sed 's/#pf api ip: \(.*\)/\1/')
