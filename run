@@ -233,8 +233,23 @@ if [ -n "$FWD_IFACE" ]; then
 fi
 
 # iptables routing
+iptables -A OUTPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+iptables -A OUTPUT -o lo -j ACCEPT
+iptables -A OUTPUT -o tap+ -j ACCEPT
+iptables -A OUTPUT -o tun+ -j ACCEPT
+
+iptables -A OUTPUT -o eth0 -p udp -m udp --dport 53 -j ACCEPT
+iptables -A OUTPUT -o eth0 -p udp -m udp --dport 51820 -j ACCEPT
+iptables -A OUTPUT -o eth0 -p tcp -m tcp --dport 1194 -j ACCEPT
+iptables -A OUTPUT -o eth0 -p udp -m udp --dport 1194 -j ACCEPT
+iptables -A OUTPUT -o eth0 -p tcp -m tcp --dport 443 -j ACCEPT
+
+iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -i lo -j ACCEPT
+
+iptables -t nat -A POSTROUTING -o tap+ -j MASQUERADE
+iptables -t nat -A POSTROUTING -o tun+ -j MASQUERADE
 iptables -t nat -A POSTROUTING -o wg0 -j MASQUERADE
-iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 
 # Setup port forwarding if requested and available
 pf_api_ip=$(grep '#pf api' "$wg_conf"| sed 's/#pf api ip: \(.*\)/\1/')
