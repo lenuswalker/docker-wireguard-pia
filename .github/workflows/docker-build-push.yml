@@ -31,7 +31,7 @@ jobs:
         with:
           platforms: linux/amd64,linux/arm,linux/arm64
           push: true
-          tags: thrnz/docker-wireguard-pia:latest
+          tags: lenuswalker/docker-wireguard-pia:latest
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
